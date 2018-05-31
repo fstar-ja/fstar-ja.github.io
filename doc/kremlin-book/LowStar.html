@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The Low* subset of F* &mdash; KreMLinユーザマニュアル  documentation</title>
+  <title>F* のサブセットとしての Low* &mdash; KreMLinユーザマニュアル  documentation</title>
   
 
   
@@ -85,9 +85,9 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">導入</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The Low* subset of F*</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#some-valid-low-constructs">Some valid Low* constructs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#some-extensions-to-low">Some extensions to Low*</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">F* のサブセットとしての Low*</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#low">いくつかの有効な Low* の例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Low* におけるいくつかの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#some-non-low-code">Some non-Low* code</a></li>
 </ul>
 </li>
@@ -157,7 +157,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>The Low* subset of F*</li>
+      <li>F* のサブセットとしての Low*</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -184,19 +184,17 @@ module B = LowStar.Buffer
 open FStar.HyperStack.ST
 open LowStar.BufferOps
 </pre>
-<div class="section" id="the-low-subset-of-f">
-<span id="language-subset"></span><h1>The Low* subset of F*<a class="headerlink" href="#the-low-subset-of-f" title="Permalink to this headline">¶</a></h1>
-<p>Low*, as formalized and presented in this <a class="reference external" href="https://arxiv.org/abs/1703.00053">paper</a>,
-is the first-order lambda calculus. Base types are booleans and
-fixed-width integers. Low* has a primitive notion of <em>buffers</em> and pointer
-arithmetic within buffer bounds. In the formalization, structures are only
-valid when allocated within a buffer.</p>
-<p>This section describes Low* by example, showing valid and invalid
-constructs, to give the reader a good grasp of what syntactic subset of the
-F* language constitutes valid Low*.</p>
-<div class="section" id="some-valid-low-constructs">
-<h2>Some valid Low* constructs<a class="headerlink" href="#some-valid-low-constructs" title="Permalink to this headline">¶</a></h2>
-<p>Low*’s base types are machine integers.</p>
+<div class="section" id="f-low">
+<span id="language-subset"></span><h1>F* のサブセットとしての Low*<a class="headerlink" href="#f-low" title="Permalink to this headline">¶</a></h1>
+<p>この <a class="reference external" href="https://arxiv.org/abs/1703.00053">論文</a> で形式化されている Low* は一階ラムダ計算です。
+基本型はブールと固定幅整数です。
+Low* は <em>buffers</em> とバッファ境界中におけるポインタ演算のプリミティブを持っています。
+この形式化では、バッファ中に確保された場合のみ、構造体は有効です。</p>
+<p>この章では有効と無効な例を使って Low* を説明します。
+F* のサブセットが有効な Low* どのように構成するのか、読者に把握してもらうことが狙いです。</p>
+<div class="section" id="low">
+<h2>いくつかの有効な Low* の例<a class="headerlink" href="#low" title="Permalink to this headline">¶</a></h2>
+<p>Low* の基本型は機種依存整数です。</p>
 <pre class="code fstar literal-block">
 let square (x: UInt32.t): UInt32.t =
   let open FStar.UInt32 in
@@ -208,9 +206,9 @@ let square (x: UInt32.t): UInt32.t =
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Classic control-flow is, naturally, supported. One may use recursive
-functions if they wish to do so, modern versions of GCC are generally quite
-good at performing tail-call optimizations.</p>
+<p>古典的なコントロールフローは当然サポートされています。
+再帰関数を使いたいかもしれません。
+近代の GCC は末尾再帰最適化を行ないます。</p>
 <pre class="code fstar literal-block">
 let abs (x: Int32.t): Pure Int32.t
   (requires Int32.v x &lt;&gt; Int.min_int 32)
@@ -231,7 +229,7 @@ let abs (x: Int32.t): Pure Int32.t
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Low* models stack allocation, which is covered in <a class="reference internal" href="#buffer-library"><span class="std std-ref">The buffer library</span></a> below.</p>
+<p>Low* は次の <a class="reference internal" href="#buffer-library"><span class="std std-ref">The buffer library</span></a> のようなスタック確保もモデル化します。</p>
 <pre class="code fstar literal-block">
 let on_the_stack (): Stack UInt64.t (fun _ -&gt; True) (fun _ _ _ -&gt; True) =
   push_frame ();
@@ -250,7 +248,7 @@ let on_the_stack (): Stack UInt64.t (fun _ -&gt; True) (fun _ _ _ -&gt; True) =
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Similarly, Low* supports heap allocation.</p>
+<p>同様に Low* はヒープ確保もサポートします。</p>
 <pre class="code fstar literal-block">
 let on_the_heap (): St UInt64.t =
   let b = B.malloc HyperStack.root 0UL 64ul in
@@ -269,8 +267,8 @@ let on_the_heap (): St UInt64.t =
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Flat records are part of the original paper formalization, and are
-translated as regular C <code class="docutils literal notranslate"><span class="pre">struct</span></code>s.</p>
+<p>フラットなレコードは先の論文で形式化されていて、それはC言語の <code class="docutils literal notranslate"><span class="pre">struct</span></code>
+に変換されます。</p>
 <pre class="code fstar literal-block">
 type uint128 = {
   low: UInt64.t;
@@ -285,7 +283,7 @@ type uint128 = {
 <span class="n">uint128</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>In the original paper, structs may be allocated within buffers.</p>
+<p>先の論文では構造体はバッファ中に確保されています。</p>
 <pre class="code fstar literal-block">
 let uint128_alloc (h l: UInt64.t): St (B.buffer uint128) =
   B.malloc HyperStack.root ({ low = l; high = h }) 1ul
@@ -299,8 +297,7 @@ let uint128_alloc (h l: UInt64.t): St (B.buffer uint128) =
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Still in the original paper, one may access a buffer index, then select a
-number of fields.</p>
+<p>また先の論文では、バッファのインデックスにアクセスでき、フィールドも選択できます。</p>
 <pre class="code fstar literal-block">
 let uint128_high (x: B.buffer uint128): Stack UInt64.t
   (requires fun h -&gt; B.live h x /\ B.length x = 1)
@@ -314,10 +311,9 @@ let uint128_high (x: B.buffer uint128): Stack UInt64.t
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>One may define global constants too, as long as they evaluate to C
-constants. As a rough approximation, arithmetic expressions and addresses of
-other globals are C constants, but as always, the <a class="reference external" href="http://open-std.org/jtc1/SC22/wg14/www/docs/n1548.pdf">C11 standard</a> is the ultimate
-source of truth.</p>
+<p>C言語が定数を評価するのと同じようにグローバル定数を定義したいかもしれません。
+概要としては、算術式と他のグローバルなアドレスはC言語の定数です。
+しかし常に <a class="reference external" href="http://open-std.org/jtc1/SC22/wg14/www/docs/n1548.pdf">C11 標準</a> が真実です。</p>
 <pre class="code fstar literal-block">
 let min_int32 = FStar.Int32.(0l -^ 0x7fffffffl -^ 1l)
 </pre>
@@ -326,16 +322,16 @@ let min_int32 = FStar.Int32.(0l -^ 0x7fffffffl -^ 1l)
 </pre></div>
 </div>
 </div>
-<div class="section" id="some-extensions-to-low">
-<h2>Some extensions to Low*<a class="headerlink" href="#some-extensions-to-low" title="Permalink to this headline">¶</a></h2>
-<p>KreMLin supports a number of programming patterns beyond the original paper
-formalization, which aim to maximize programmer productivity. We now review
-the main ones.</p>
-<p>One can rely on KreMLin to compile F*’s structural equality (the <code class="docutils literal notranslate"><span class="pre">(=)</span></code>
-operator) to C functions specialized to each type. Furthermore, the function
-below demonstrates the use of a struct type as a value, which is
-straightforwardly compiled to a C structure passed by value. Be aware that doing
-so has performance implications (see ??).</p>
+<div class="section" id="id2">
+<h2>Low* におけるいくつかの拡張<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>KreMLin は先の論文における形式化を超えていくつかのプログラミングパターンをサポートしています。
+それらはプログラマの生産性を最大化させます。
+ここでその主要なものを見てみましょう。</p>
+<p>KreMLin は F* 構造的な等価性 (<code class="docutils literal notranslate"><span class="pre">(=)</span></code> 演算子)
+をそれぞれの型に特化したC言語関数にコンパイルできます。
+さらに、以下の関数は構造体の型を値として使うことを示しています。
+この関数は値を渡されるC言語構造体に素直にコンパイルされます。
+パフォーマンスへの影響に気をつけてください (?? を参照)。</p>
 <pre class="code fstar literal-block">
 let uint128_equal (x y: uint128) =
   x = y
@@ -351,9 +347,8 @@ let uint128_equal (x y: uint128) =
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>One may also use F* inductives, knowing that KreMLin will compile them as
-tagged unions, with a variety of optimized compilation schemes to make the
-generated code as palatable as possible.</p>
+<p>F* の帰納を使いたいかもしれません。
+KreMLin はそれら帰納をタグ付き共用体にコンパイルします。</p>
 <pre class="code fstar literal-block">
 noeq
 type key =
@@ -375,7 +370,8 @@ type key =
 </pre></div>
 </div>
 <p>Generally, KreMLin performs a whole-program monomorphization of
-parameterized data types. The example below demonstrates this, along with a
+parameterized data types.
+The example below demonstrates this, along with a
 “pretty” compilation scheme for the option type that does not involves an
 anonymous union.</p>
 <pre class="code fstar literal-block">
@@ -846,7 +842,7 @@ level. All of these are covered in the rest of this chapter.</p>
 </div>
 </div>
 <div class="section" id="machine-integers">
-<span id="id1"></span><h2>Machine integers<a class="headerlink" href="#machine-integers" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Machine integers<a class="headerlink" href="#machine-integers" title="Permalink to this headline">¶</a></h2>
 <p>Machine integers are modeled as natural numbers that fit within a certain number
 of bits. This model is dropped by KreMLin, in favor of C’s fixed-width types.</p>
 <p>Fixed-width integers are found in <code class="docutils literal notranslate"><span class="pre">FStar.UInt{16,32,64,128}.fst</span></code> and
@@ -1072,7 +1068,7 @@ of C functions.</p>
 <li><code class="docutils literal notranslate"><span class="pre">rand</span></code> and <code class="docutils literal notranslate"><span class="pre">srand</span></code>; note that this makes the assumption that <code class="docutils literal notranslate"><span class="pre">sizeof</span>
 <span class="pre">int</span> <span class="pre">==</span> <span class="pre">4</span></code>, which is true of most modern platforms</li>
 <li><code class="docutils literal notranslate"><span class="pre">exit</span></code>, which is not polymorphic, per the reasons exposed
-earlier in <a class="reference internal" href="#language-subset"><span class="std std-ref">The Low* subset of F*</span></a>, see <code class="docutils literal notranslate"><span class="pre">C.Failure</span></code> below instead</li>
+earlier in <a class="reference internal" href="#language-subset"><span class="std std-ref">F* のサブセットとしての Low*</span></a>, see <code class="docutils literal notranslate"><span class="pre">C.Failure</span></code> below instead</li>
 <li>the <code class="docutils literal notranslate"><span class="pre">stdout</span></code>, <code class="docutils literal notranslate"><span class="pre">stderr</span></code> and <code class="docutils literal notranslate"><span class="pre">fflush</span></code> functions</li>
 <li>the <code class="docutils literal notranslate"><span class="pre">intptr_t</span></code> C11 type, along with a default value <code class="docutils literal notranslate"><span class="pre">nullptr</span></code> –
 useful to expose external APIs that take <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*</span></code></li>

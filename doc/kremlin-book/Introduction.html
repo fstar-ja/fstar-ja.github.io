@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="_static/fslit.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The Low* subset of F*" href="LowStar.html" />
+    <link rel="next" title="F* のサブセットとしての Low*" href="LowStar.html" />
     <link rel="prev" title="KreMLin ユーザマニュアル" href="index.html" /> 
 
   
@@ -86,11 +86,11 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">導入</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#low">Low* のエッセンス</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tooling-and-setup">Tooling and setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage-of-the-kremlin-tool">Usage of the KreMLin tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">ツールとセットアップ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kremlin">KreMLin ツールの使い方</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="LowStar.html">The Low* subset of F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LowStar.html">F* のサブセットとしての Low*</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LowStar.html#the-low-libraries">The Low* libraries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LowStar.html#the-low-system-libraries">The Low* system libraries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="RingBuffer.html">Example: RingBuffer</a></li>
@@ -189,7 +189,7 @@ KreMLin ツールとC言語プログラムやライブラリを生成する様�
 <p>このチュートリアルは読者が F* を熟知していることを仮定しています;
 もし疑問があれば、F* の <a class="reference external" href="https://fstar-lang.org/tutorial">チュートリアル</a>
 を読んでください。
-(訳注: 上記チュートリアルには日本語訳 <a class="reference external" href="http://fstar-ja.metasepi.org/doc/tutorial/">http://fstar-ja.metasepi.org/doc/tutorial/</a> もあります。)</p>
+(訳注: 左記チュートリアルには日本語訳 <a class="reference external" href="http://fstar-ja.metasepi.org/doc/tutorial/">http://fstar-ja.metasepi.org/doc/tutorial/</a> もあります。)</p>
 <div class="section" id="low">
 <h2>Low* のエッセンス<a class="headerlink" href="#low" title="Permalink to this headline">¶</a></h2>
 <p>次のコードは古典的な <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> 関数を実装しています。
@@ -346,88 +346,85 @@ Low* の詳細な議論はこのチュートリアルの残りの章で説明し
 F* におけるいくつかのC言語の機能モデルに依存しています。
 <code class="docutils literal notranslate"><span class="pre">push_frame</span></code> や <code class="docutils literal notranslate"><span class="pre">pop_frame</span></code> のような特化したコンビネータは
 F* 組み込みの作用を使ってコールスタックの構造を考慮することができます。</li>
-<li><strong>High-level verification of low-level code</strong>. The example contains a vast
-amount of specification, ranging from temporal safety (liveness) to
-spatial safety (disjointness, indices within bounds). Imperative data
-structures, such as buffers or machine integers, are reflected at the
-proof level with sequences and natural numbers respectively. This allows
-for a powerful specification style, which ultimately states that after
-calling <code class="docutils literal notranslate"><span class="pre">memcpy</span></code>, the <code class="docutils literal notranslate"><span class="pre">src</span></code> and <code class="docutils literal notranslate"><span class="pre">dst</span></code> buffers are the same up to <code class="docutils literal notranslate"><span class="pre">len</span></code>.
-All of this specification is erased, leaving only a succinct, low-level
-<code class="docutils literal notranslate"><span class="pre">for</span></code>-loop.</li>
-<li><strong>Tooling support for programmer productivity</strong>. The example relies on
-KreMLin to automatically generate monomorphic instance of the polymorphic
-<code class="docutils literal notranslate"><span class="pre">memcpy</span></code> function above. This is representative of a more general take:
-whenever there is a predictable compilation scheme for a high-level
-feature, KreMLin will provide support to enhance the programming
-experience. In Low*, one enjoys data types, pattern-matching, tuples,
-which are respectively compiled as C tagged unions, cascading
-<code class="docutils literal notranslate"><span class="pre">if</span></code>s, or structures passed by value.</li>
+<li><strong>低レベルなコードに対する高レベルな検証</strong>。 この例は一時的な安全性(活性)
+から(互いに素でインデックスが範囲外であるような)空間的な安全性に及ぶ
+膨大な量の仕様を含んでいます。
+バッファや機種依存整数のような命令的なデータ構造は、
+証明レベルではそれぞれシーケンスと自然数に反映されます。
+これは <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> を呼び出した後に <code class="docutils literal notranslate"><span class="pre">src</span></code> と <code class="docutils literal notranslate"><span class="pre">dst</span></code> バッファが <code class="docutils literal notranslate"><span class="pre">len</span></code>
+だけ同じであることを表明するような、強力な仕様スタイルを可能にします。
+この仕様の全ては消去され、簡潔な低レベルな <code class="docutils literal notranslate"><span class="pre">for</span></code> ループだけが残されます。</li>
+<li><strong>プログラマの生産性のためのツールサポート</strong>。 この例は KreMLin
+が上記の多相的な <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> 関数を単相的なインスタンスを自動生成することに頼っています。
+高レベルなコンパイラの機能があったても、KreMLin
+はプログラミング体験の向上に貢献します。
+Low* ではデータ型、パターンマッチ、タプルを利用できます。
+それらはそれぞれC言語のタグ付き共用体、<code class="docutils literal notranslate"><span class="pre">if</span></code>
+の重なり、値によって渡される構造体にコンパイルされます。</li>
 </ul>
 </div>
-<div class="section" id="tooling-and-setup">
-<h2>Tooling and setup<a class="headerlink" href="#tooling-and-setup" title="Permalink to this headline">¶</a></h2>
-<p>We now show how to get started with the tools and obtain a working F*/KreMLin
-pair.</p>
-<p>KreMLin is intimately tied with F*:</p>
+<div class="section" id="id3">
+<h2>ツールとセットアップ<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>ツールの使い方を紹介し、動作する F*/KreMLin ペアを入手しましょう。</p>
+<p>KreMLin は F* と親密に連携しています:</p>
 <ul class="simple">
-<li>the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch of KreMLin works with the <code class="docutils literal notranslate"><span class="pre">stable</span></code> branch of F*</li>
-<li>the <code class="docutils literal notranslate"><span class="pre">fstar-master</span></code> branch of KreMLin works with the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch of F*.</li>
+<li>KreMLin の <code class="docutils literal notranslate"><span class="pre">master</span></code> ブランチは F* の <code class="docutils literal notranslate"><span class="pre">stable</span></code> ブランチと連携しています</li>
+<li>KreMLin の <code class="docutils literal notranslate"><span class="pre">fstar-master</span></code> ブランチは F* の <code class="docutils literal notranslate"><span class="pre">master</span></code> ブランチと連携しています。</li>
 </ul>
-<p>Due to the fast-paced nature of F* development, this tutorial is kept
-up-to-date with the <em>latter</em> set of revisions, meaning that this tutorial
-expects the user to have:</p>
+<p>F* の急速な開発のために、このチュートリアルでは <em>後者</em> のリビジョンに追従します。
+これはこのチュートリアルが次のような読者を想定していることを意味しています:</p>
 <ul class="simple">
-<li>an up-to-date version of F* <code class="docutils literal notranslate"><span class="pre">master</span></code> <a class="reference external" href="https://github.com/FStarLang/FStar/blob/master/INSTALL.md">built from source</a></li>
-<li>an up-to-date version of KreMLin <code class="docutils literal notranslate"><span class="pre">fstar-master</span></code>, <a class="reference external" href="https://github.com/FStarLang/kremlin/tree/fstar-master/#trying-out-kremlin">built from source</a></li>
-<li>a C compiler in the path, preferably a recent version of GCC.</li>
+<li>F* <code class="docutils literal notranslate"><span class="pre">master</span></code> ブランチの最新版を <a class="reference external" href="https://github.com/FStarLang/FStar/blob/master/INSTALL.md">ソースからビルド</a> していて</li>
+<li>KreMLin <code class="docutils literal notranslate"><span class="pre">fstar-master</span></code> ブランチの最新版を <a class="reference external" href="https://github.com/FStarLang/kremlin/tree/fstar-master/#trying-out-kremlin">ソースからビルド</a> していて</li>
+<li>パスにC言語コンパイラ、できれば最新のGCC、があること。</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">On Windows, we expect the user to use the same setup as F*, i.e. a Cygwin
-environment with a <a class="reference external" href="https://github.com/fdopen/opam-repository-mingw/">Windows OCaml</a>, along with the MinGW
-64-bit compilers installed <em>as cygwin packages</em>, i.e. the
-<code class="docutils literal notranslate"><span class="pre">x86_64-w64-mingw32-gcc</span></code> executable, along with the corresponding linker,
-archiver, etc.</p>
+<p class="last">Windows では F* を同様に設定していることを想定します。
+すなわち <a class="reference external" href="https://github.com/fdopen/opam-repository-mingw/">Windows OCaml</a>
+をともなった Cygwin 環境に MinGW 64-bit コンパイラが
+cygwin パッケージ <code class="docutils literal notranslate"><span class="pre">x86_64-w64-mingw32-gcc</span></code>
+としてインストールされている必要があります。</p>
 </div>
 </div>
-<div class="section" id="usage-of-the-kremlin-tool">
-<h2>Usage of the KreMLin tool<a class="headerlink" href="#usage-of-the-kremlin-tool" title="Permalink to this headline">¶</a></h2>
-<p>The KreMLin compiler comes as a command-line tool <code class="docutils literal notranslate"><span class="pre">krml</span></code>. As a reminder, <code class="docutils literal notranslate"><span class="pre">krml</span>
-<span class="pre">-help</span></code> provides the list of options and warnings along with proper
-documentation.</p>
-<p>The process of extracting from F* to C involves:</p>
+<div class="section" id="kremlin">
+<h2>KreMLin ツールの使い方<a class="headerlink" href="#kremlin" title="Permalink to this headline">¶</a></h2>
+<p>KreMLin コンパイラはコマンドラインツールの <code class="docutils literal notranslate"><span class="pre">krml</span></code> です。
+<code class="docutils literal notranslate"><span class="pre">krml</span> <span class="pre">-help</span></code> はオプションを警告のリストを表示することを覚えておいてください。</p>
+<p>F* からC言語へのエクストラクトのプロセスは次のようになります:</p>
 <ol class="arabic simple">
-<li>calling <code class="docutils literal notranslate"><span class="pre">fstar.exe</span></code> to generate a set of <code class="docutils literal notranslate"><span class="pre">.krml</span></code> files</li>
-<li>calling <code class="docutils literal notranslate"><span class="pre">krml</span></code> on these files to generate a set of C files</li>
-<li>calling the C compiler to generate an executable.</li>
+<li><code class="docutils literal notranslate"><span class="pre">fstar.exe</span></code> を呼び出して <code class="docutils literal notranslate"><span class="pre">.krml</span></code> ファイル群を生成し、</li>
+<li>上記のファイル群に <code class="docutils literal notranslate"><span class="pre">krml</span></code> を呼び出してC言語ファイル群を生成し、</li>
+<li>C言語コンパイラを呼び出して実行ファイルを生成します。</li>
 </ol>
-<p>KreMLin can automate the first and last steps, and act as a driver for both F*
-and the C compiler, allowing for a quick edit-compile-cycle. For this present
-file, one may use:</p>
+<p>KreMLin は上記の最初と最後のを自動化でき、F*
+とC言語コンパイラ両方のドライバとしての機能を果たします。
+これによって編集/コンパイルを迅速に行なえます。
+先のファイルについて、次のように使えます:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ krml introduction.fst -no-prefix Introduction -o test.exe <span class="o">&amp;&amp;</span> ./test.exe
 </pre></div>
 </div>
-<p>The present tutorial will use this mode exclusively, as it
-is much easier to use and allows trying out KreMLin without writing a
-substantial amount of <code class="docutils literal notranslate"><span class="pre">Makefile</span></code>s. Furthermore, one can pass <code class="docutils literal notranslate"><span class="pre">.c</span></code>, <code class="docutils literal notranslate"><span class="pre">.h</span></code>,
-<code class="docutils literal notranslate"><span class="pre">.o</span></code>, and <code class="docutils literal notranslate"><span class="pre">.S</span></code> files to KreMLin, to be included at the right step of the
-build, along with C linker and compiler options via KreMLin’s <code class="docutils literal notranslate"><span class="pre">-ccopt</span></code> and
-<code class="docutils literal notranslate"><span class="pre">-ldopt</span></code> options.</p>
+<p>このチュートリアルではもっぱら上記のコマンドを使います。
+上記は簡単に使えて、<code class="docutils literal notranslate"><span class="pre">Makefile</span></code> を書かずに KreMLin を試用できるためです。
+さらにビルドの正しいステップでインクルードされるように
+<code class="docutils literal notranslate"><span class="pre">.c</span></code>、<code class="docutils literal notranslate"><span class="pre">.h</span></code>、<code class="docutils literal notranslate"><span class="pre">.o</span></code> そして <code class="docutils literal notranslate"><span class="pre">.S</span></code> ファイルを KreMLin に渡すことができます。
+C言語リンカとコンパイラオプションを KreMLin の <code class="docutils literal notranslate"><span class="pre">-ccopt</span></code> と <code class="docutils literal notranslate"><span class="pre">-ldopt</span></code>
+オプションを通じて渡せます。</p>
 <div class="admonition-fixme admonition">
 <p class="first admonition-title">FIXME (Jonathan Protzenko)</p>
 <p class="last">Add a forward pointer to section 8.</p>
 </div>
-<p>However, using KreMLin as a driver is inefficient for two reasons:</p>
+<p>けれども、KreMLin をドライバとして使うのは以下2つの点で効果的ではありません:</p>
 <ul class="simple">
-<li>step 1 uses “legacy” extraction in F*: files are processed sequentially,
-without caching, and verification is by default not performed (use <code class="docutils literal notranslate"><span class="pre">-verify</span></code>)</li>
-<li>step 3 is not parallel</li>
+<li>ステップ1では F* の “旧式” のエクストラクトを使います:
+ファイル群はシーケンシャルに処理され、キャッシュされません。
+さらにデフォルトでは検証は実行されません (<code class="docutils literal notranslate"><span class="pre">-verify</span></code> を使う必要がります)</li>
+<li>ステップ3が並列実行ではありません</li>
 </ul>
-<p>Section ?? provides a complete sample Makefile that performs parallel
-verification and extraction, along with parallel compilation of the resulting C
-code, using F*’s automated dependency analysis and <code class="docutils literal notranslate"><span class="pre">gcc</span> <span class="pre">-MM</span></code> for correct,
-incremental builds.</p>
+<p>??章では、 検証とエクストラクトを並列で実行し、結果得られたC言語コードを並列にコンパイルする
+Makefile の具体的な例を提供します。
+上記は F* の自動化された依存性解析と <code class="docutils literal notranslate"><span class="pre">gcc</span> <span class="pre">-MM</span></code>
+を利用していて、インクリメンタルなビルドができます。</p>
 </div>
 </div>
 
@@ -439,7 +436,7 @@ incremental builds.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="LowStar.html" class="btn btn-neutral float-right" title="The Low* subset of F*" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="LowStar.html" class="btn btn-neutral float-right" title="F* のサブセットとしての Low*" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="KreMLin ユーザマニュアル" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
